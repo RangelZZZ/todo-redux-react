@@ -1,13 +1,26 @@
 import React from "react";
 import {Component} from "react-dom";
 import ReactDOM from 'react-dom';
+import {createStore} from "redux";
+import reducer from "./reducers/reducer";
+
+const store = createStore(reducer);
 
 class App extends React.Component {
 
+    add(text) {
+        console.log("into add");
+        store.dispatch({
+            type: "ADD",
+            text
+        });
+    }
+
+
     render() {
         return <div>
-            <AddTodo/>
-            <TodoList/>
+            <AddTodo onAdd={this.add.bind(this)}/>
+            <TodoList todos={store.getState()}/>
             <Footer/>
         </div>;
     }
@@ -15,10 +28,18 @@ class App extends React.Component {
 
 
 class AddTodo extends React.Component {
+
+    add() {
+        const text = this.inputText.value;
+        this.props.onAdd(text);
+    }
+
     render() {
         return <div>
-            <input type="text"/>
-            <button type="butoon">添加</button>
+            <input type="text" ref={(text) => {
+                this.inputText = text
+            }}/>
+            <button type="butoon" onClick={this.add.bind(this)}>添加</button>
         </div>
     }
 }
@@ -26,10 +47,10 @@ class AddTodo extends React.Component {
 class TodoList extends React.Component {
 
     render() {
-        let todoList = [1, 2, 3].map((element, index) => {
+        let todoList = this.props.todos.todolist.map((element, index) => {
             return <div key={index}>
                 <input type="checkbox"/>
-                <span>{element}</span>
+                <span>{element.value}</span>
                 <button type="button">删除</button>
             </div>
         });
@@ -43,7 +64,7 @@ class TodoList extends React.Component {
 class Footer extends React.Component {
     render() {
         const filterName = ["ALL", "ACTIVE", "COMPLETED"].map((element, index) => {
-            return <div key={index} style={{"display":"inline"}}>
+            return <div key={index} style={{"display": "inline"}}>
                 <a>{element}&nbsp;&nbsp;</a>
             </div>
         });
@@ -53,7 +74,12 @@ class Footer extends React.Component {
     }
 }
 
-ReactDOM.render(<App/>, document.getElementById("root"));
+const renderFunction = () => {
+    ReactDOM.render(<App/>, document.getElementById("root"))
+};
 
+store.subscribe(renderFunction);
+
+renderFunction();
 
 
