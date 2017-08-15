@@ -9,7 +9,6 @@ const store = createStore(reducer);
 class App extends React.Component {
 
     add(text) {
-        console.log("into add");
         store.dispatch({
             type: "ADD",
             text
@@ -17,10 +16,18 @@ class App extends React.Component {
     }
 
 
+    delete(index) {
+        store.dispatch({
+            type: "DELETE",
+            text:index
+        });
+    }
+
+
     render() {
         return <div>
             <AddTodo onAdd={this.add.bind(this)}/>
-            <TodoList todos={store.getState()}/>
+            <TodoList todos={store.getState()} onDelete={this.delete.bind(this.index)}/>
             <Footer/>
         </div>;
     }
@@ -46,12 +53,16 @@ class AddTodo extends React.Component {
 
 class TodoList extends React.Component {
 
+    delete(index) {
+        this.props.onDelete(index);
+    }
+
     render() {
         let todoList = this.props.todos.todolist.map((element, index) => {
             return <div key={index}>
                 <input type="checkbox"/>
                 <span>{element.value}</span>
-                <button type="button">删除</button>
+                <button type="button" onClick={this.delete.bind(this, index)}>删除</button>
             </div>
         });
 
