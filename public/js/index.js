@@ -15,7 +15,6 @@ class App extends React.Component {
         });
     }
 
-
     delete(index) {
         store.dispatch({
             type: "DELETE",
@@ -23,11 +22,21 @@ class App extends React.Component {
         });
     }
 
-    handleClick(element, index) {
-        if (element === "ALL") {
-            store.dispatch({
-                type: "ALL",
-            });
+    filter(filterName) {
+        store.dispatch({
+            type: "SET_FILTER",
+            filterName
+        });
+    }
+
+    filterTodo() {
+        if (store.getState().filterName === "ALL") {
+            return store.getState().todolist;
+        }
+        else if (store.getState().filterName === "ACTIVE") {
+            return store.getState().todolist.filter(todo => !todo.completed);
+        } else {
+            return store.getState().todolist.filter(todo => todo.completed);
         }
     }
 
@@ -41,9 +50,9 @@ class App extends React.Component {
     render() {
         return <div>
             <AddTodo onAdd={this.add.bind(this)}/>
-            <TodoList todos={store.getState()} onChangeState={this.changeState.bind(this)}
+            <TodoList todos={this.filterTodo()} onChangeState={this.changeState.bind(this)}
                       onDelete={this.delete.bind(this)}/>
-            <Footer OnHandleClick={this.handleClick.bind(this)}/>
+            <Footer onFilter={this.filter.bind(this)}/>
         </div>;
     }
 }
@@ -54,6 +63,7 @@ class AddTodo extends React.Component {
     add() {
         const text = this.inputText.value;
         this.props.onAdd(text);
+        this.inputText.value = "";
     }
 
     render() {
@@ -78,9 +88,9 @@ class TodoList extends React.Component {
 
 
     render() {
-        let todoList = this.props.todos.todolist.map((element, index) => {
+        let todoList = this.props.todos.map((element, index) => {
             return <div key={index}>
-                <input type="checkbox" onClick={this.changeState.bind(this, index)}
+                <input type="checkbox" onChange={this.changeState.bind(this, index)}
                        checked={element.completed === true ? "checked" : ""}/>
                 <span>{element.value}</span>
                 <button type="button" onClick={this.delete.bind(this, index)}>删除</button>
@@ -95,14 +105,14 @@ class TodoList extends React.Component {
 
 class Footer extends React.Component {
 
-    handleClick(element, index) {
-        this.props.OnHandleClick(element, index);
+    filter(element) {
+        this.props.onFilter(element);
     }
 
     render() {
         const filterName = ["ALL", "ACTIVE", "COMPLETED"].map((element, index) => {
             return <div key={index} style={{"display": "inline"}}>
-                <a onClick={this.handleClick.bind(this, element, index)}>{element}&nbsp;&nbsp;</a>
+                <a onClick={this.filter.bind(this, element)}>{element}&nbsp;&nbsp;</a>
             </div>
         });
         return <div>
