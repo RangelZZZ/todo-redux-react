@@ -19,16 +19,31 @@ class App extends React.Component {
     delete(index) {
         store.dispatch({
             type: "DELETE",
-            text:index
+            text: index
         });
     }
 
+    handleClick(element, index) {
+        if (element === "ALL") {
+            store.dispatch({
+                type: "ALL",
+            });
+        }
+    }
+
+    changeState(index) {
+        store.dispatch({
+            type: "CHANGE_STATE",
+            text: index
+        });
+    }
 
     render() {
         return <div>
             <AddTodo onAdd={this.add.bind(this)}/>
-            <TodoList todos={store.getState()} onDelete={this.delete.bind(this.index)}/>
-            <Footer/>
+            <TodoList todos={store.getState()} onChangeState={this.changeState.bind(this)}
+                      onDelete={this.delete.bind(this)}/>
+            <Footer OnHandleClick={this.handleClick.bind(this)}/>
         </div>;
     }
 }
@@ -46,7 +61,7 @@ class AddTodo extends React.Component {
             <input type="text" ref={(text) => {
                 this.inputText = text
             }}/>
-            <button type="butoon" onClick={this.add.bind(this)}>添加</button>
+            <button type="button" onClick={this.add.bind(this)}>添加</button>
         </div>
     }
 }
@@ -57,10 +72,16 @@ class TodoList extends React.Component {
         this.props.onDelete(index);
     }
 
+    changeState(index) {
+        this.props.onChangeState(index);
+    }
+
+
     render() {
         let todoList = this.props.todos.todolist.map((element, index) => {
             return <div key={index}>
-                <input type="checkbox"/>
+                <input type="checkbox" onClick={this.changeState.bind(this, index)}
+                       checked={element.completed === true ? "checked" : ""}/>
                 <span>{element.value}</span>
                 <button type="button" onClick={this.delete.bind(this, index)}>删除</button>
             </div>
@@ -73,10 +94,15 @@ class TodoList extends React.Component {
 }
 
 class Footer extends React.Component {
+
+    handleClick(element, index) {
+        this.props.OnHandleClick(element, index);
+    }
+
     render() {
         const filterName = ["ALL", "ACTIVE", "COMPLETED"].map((element, index) => {
             return <div key={index} style={{"display": "inline"}}>
-                <a>{element}&nbsp;&nbsp;</a>
+                <a onClick={this.handleClick.bind(this, element, index)}>{element}&nbsp;&nbsp;</a>
             </div>
         });
         return <div>
@@ -84,6 +110,7 @@ class Footer extends React.Component {
         </div>
     }
 }
+
 
 const renderFunction = () => {
     ReactDOM.render(<App/>, document.getElementById("root"))
