@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "webpack -d --watch",
-    "webpack": "webpack"
+    "webpack": "webpack -d --watch",
+    "wpw": "webpack -w"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -31,6 +32,8 @@
     "babel-loader": "^6.2.4",
     "mocha": "^3.0.2",
     "nodemon": "^1.10.0",
-    "supertest": "^2.0.0"
+    "supertest": "^2.0.0",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.12.2"
   }
 }

@@ -7,7 +7,7 @@ class App extends React.Component {
     render() {
         return <div>
             <AddTodo/>
-            {/*<TodoList/>*/}
+            <TodoList/>
             {/*<Footer/>*/}
         </div>;
     }
@@ -19,6 +19,23 @@ class AddTodo extends React.Component {
         return <div>
             <input type="text"/>
             <button type="butoon">添加</button>
+        </div>
+    }
+}
+
+class TodoList extends React.Component {
+
+    render() {
+        let todoList = [1, 2, 3].map((element,index) => {
+            return <div key={index}>
+                <input type="checkbox"/>
+                <span>{element}</span>
+                <button type="button">删除</button>
+            </div>
+        });
+
+        return <div>
+            {todoList}
         </div>
     }
 }
