@@ -8,7 +8,7 @@ class App extends React.Component {
         return <div>
             <AddTodo/>
             <TodoList/>
-            {/*<Footer/>*/}
+            <Footer/>
         </div>;
     }
 }
@@ -26,7 +26,7 @@ class AddTodo extends React.Component {
 class TodoList extends React.Component {
 
     render() {
-        let todoList = [1, 2, 3].map((element,index) => {
+        let todoList = [1, 2, 3].map((element, index) => {
             return <div key={index}>
                 <input type="checkbox"/>
                 <span>{element}</span>
@@ -36,6 +36,19 @@ class TodoList extends React.Component {
 
         return <div>
             {todoList}
+        </div>
+    }
+}
+
+class Footer extends React.Component {
+    render() {
+        const filterName = ["ALL", "ACTIVE", "COMPLETED"].map((element, index) => {
+            return <div key={index} style={{"display":"inline"}}>
+                <a>{element}&nbsp;&nbsp;</a>
+            </div>
+        });
+        return <div>
+            {filterName}
         </div>
     }
 }
